@@ -1,106 +1,87 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo Explorer Game</title>
-    <!-- Подключаем файл со стилями -->
+    <!-- Connecting the stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Вся структура экранов остается без изменений -->
-
-    <!-- Экран 0: Загрузка -->
+    <!-- Screen 0: Loading -->
     <div id="loading-screen" class="screen">
-        <h2>Ищем интересное место...</h2>
+        <h2>Finding an interesting place...</h2>
     </div>
 
-    <!-- Экран 1: Стартовое меню -->
-      <div id="start-screen" class="screen active">
+    <!-- Screen 1: Start Menu -->
+    <div id="start-screen" class="screen active">
         <h1>Geo Explorer</h1>
-        <button id="start-btn" class="action-button">Начать игру</button>
-        <!-- ДОБАВЛЯЕМ КНОПКУ НАСТРОЕК -->
-        <button id="settings-btn" class="secondary-button">Настройки</button>
+        <button id="start-btn" class="action-button">Start Game</button>
+        <button id="settings-btn" class="secondary-button">Settings</button>
     </div>
 
-    <!-- ДОБАВЛЯЕМ ЦЕЛЫЙ НОВЫЙ ЭКРАН НАСТРОЕК -->
+    <!-- Screen 2: Settings -->
     <div id="settings-screen" class="screen">
-        <h2>Настройки Игры</h2>
+        <h2>Game Settings</h2>
         
         <div class="settings-section">
-            <h3>Таймер раунда:</h3>
+            <h3>Round Timer:</h3>
             <div class="radio-group">
-                <label><input type="radio" name="timer-setting" value="15"> 15 сек</label>
-                <label><input type="radio" name="timer-setting" value="30"> 30 сек</label>
-                <label><input type="radio" name="timer-setting" value="60" checked> 60 сек</label>
-                <label><input type="radio" name="timer-setting" value="100"> 100 сек</label>
+                <label><input type="radio" name="timer-setting" value="15"> 15 sec</label>
+                <label><input type="radio" name="timer-setting" value="30"> 30 sec</label>
+                <label><input type="radio" name="timer-setting" value="60" checked> 60 sec</label>
+                <label><input type="radio" name="timer-setting" value="100"> 100 sec</label>
             </div>
         </div>
 
         <div class="settings-section">
-            <h3>Зоны поиска:</h3>
-            <!-- Этот блок будет заполнен динамически из JS -->
+            <h3>Search Zones:</h3>
             <div id="zone-checkboxes" class="checkbox-group"></div>
         </div>
 
-        <button id="save-settings-btn" class="action-button">Сохранить</button>
+        <button id="save-settings-btn" class="action-button">Save</button>
+        <button id="back-to-main-btn" class="secondary-button">Back to Menu</button>
     </div>
 
-    <!-- Экран 2: Игровой процесс -->
-   <div id="game-screen" class="screen">
-    <div id="street-view"></div>
-    <div id="game-ui">
-        <p>Время: <span id="timer">100</span>с</p>
-        <p>Шаги: <span id="steps">500</span></p>
+    <!-- Screen 3: Gameplay -->
+    <div id="game-screen" class="screen">
+        <div id="street-view"></div>
+        <div id="game-ui">
+            <p>Time: <span id="timer">100</span>s</p>
+            <p>Moves: <span id="steps">500</span></p>
+        </div>
+        <button id="quit-game-btn" class="quit-button">Main Menu</button>
+        <button id="guess-now-btn" class="action-button">Guess!</button>
     </div>
-
-    <!-- ВОТ ЭТУ КНОПКУ МЫ ДОБАВЛЯЕМ -->
-    <button id="guess-now-btn" class="action-button">Угадать!</button>
-</div>
     
-    <!-- Экран 3: Карта для угадывания -->
+    <!-- Screen 4: Guessing Map -->
     <div id="guess-screen" class="screen">
-        <h2>Где, по-вашему, вы находитесь?</h2>
+        <h2>Where do you think you are?</h2>
         <div id="guess-map"></div>
-        <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;">Подтвердить догадку</button>
+        <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;">Confirm Guess</button>
     </div>
 
-    <!-- Экран 4: Экран результатов -->
+    <!-- Screen 5: Results -->
     <div id="result-screen" class="screen">
-        <h2>Результаты Раунда</h2>
-        <p>Расстояние: <span id="distance-result">0</span> км</p>
-        <p>Ваш счет: <span id="score-result">0</span> очков</p>
-        <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Играть снова</button>
-    <div id="result-map"></div>
-
-    <p>Расстояние: <span id="distance-result">0</span> км</p>
-    <p>Ваш счет: <span id="score-result">0</span> очков</p>
-    <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Играть снова</button>
-</div>
+        <h2>Round Results</h2>
+        <div id="result-map"></div>
+        <p>Distance: <span id="distance-result">0</span> km</p>
+        <p>Your Score: <span id="score-result">0</span> points</p>
+        <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Play Again</button>
     </div>
 
-    <!-- --- НОВЫЙ СПОСОБ ПОДКЛЮЧЕНИЯ СКРИПТОВ --- -->
-
-    <!-- 1. Загружаем файл конфигурации с нашим ключом API -->
+    <!-- --- DYNAMIC SCRIPT LOADING --- -->
     <script src="config.js"></script>
-    
-    <!-- 2. Загружаем основную логику игры -->
-    <script src="game.js"></script>
-
-    <!-- 3. Динамически создаем и добавляем скрипт Google Maps, используя ключ из config.js -->
+    <script src="game-test.js"></script>
     <script>
-      // Эта небольшая функция создает тег <script> и добавляет его на страницу
       function loadGoogleMapsAPI() {
         const script = document.createElement('script');
-        // Мы собираем URL, подставляя ключ из нашего файла config.js
         script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=geometry&callback=initGame`;
         script.async = true;
         script.defer = true;
-        // Добавляем готовый скрипт в <head> документа
         document.head.appendChild(script);
       }
-      // Вызываем функцию, чтобы начать загрузку API
       loadGoogleMapsAPI();
     </script>
 
