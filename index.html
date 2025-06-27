@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geo Explorer Game</title>
+    <!-- Подключаем файл со стилями -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Вся структура экранов остается без изменений -->
+
+    <!-- Экран 0: Загрузка -->
+    <div id="loading-screen" class="screen">
+        <h2>Ищем интересное место...</h2>
+    </div>
+
+    <!-- Экран 1: Стартовое меню -->
+    <div id="start-screen" class="screen active">
+        <h1>Geo Explorer</h1>
+        <button id="start-btn" class="action-button">Начать игру</button>
+    </div>
+
+    <!-- Экран 2: Игровой процесс -->
+   <div id="game-screen" class="screen">
+    <div id="street-view"></div>
+    <div id="game-ui">
+        <p>Время: <span id="timer">100</span>с</p>
+        <p>Шаги: <span id="steps">500</span></p>
+    </div>
+
+    <!-- ВОТ ЭТУ КНОПКУ МЫ ДОБАВЛЯЕМ -->
+    <button id="guess-now-btn" class="action-button">Угадать!</button>
+</div>
+    
+    <!-- Экран 3: Карта для угадывания -->
+    <div id="guess-screen" class="screen">
+        <h2>Где, по-вашему, вы находитесь?</h2>
+        <div id="guess-map"></div>
+        <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;">Подтвердить догадку</button>
+    </div>
+
+    <!-- Экран 4: Экран результатов -->
+    <div id="result-screen" class="screen">
+        <h2>Результаты Раунда</h2>
+        <p>Расстояние: <span id="distance-result">0</span> км</p>
+        <p>Ваш счет: <span id="score-result">0</span> очков</p>
+        <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Играть снова</button>
+    <div id="result-map"></div>
+
+    <p>Расстояние: <span id="distance-result">0</span> км</p>
+    <p>Ваш счет: <span id="score-result">0</span> очков</p>
+    <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Играть снова</button>
+</div>
+    </div>
+
+    <!-- --- НОВЫЙ СПОСОБ ПОДКЛЮЧЕНИЯ СКРИПТОВ --- -->
+
+    <!-- 1. Загружаем файл конфигурации с нашим ключом API -->
+    <script src="config.js"></script>
+    
+    <!-- 2. Загружаем основную логику игры -->
+    <script src="game.js"></script>
+
+    <!-- 3. Динамически создаем и добавляем скрипт Google Maps, используя ключ из config.js -->
+    <script>
+      // Эта небольшая функция создает тег <script> и добавляет его на страницу
+      function loadGoogleMapsAPI() {
+        const script = document.createElement('script');
+        // Мы собираем URL, подставляя ключ из нашего файла config.js
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=geometry&callback=initGame`;
+        script.async = true;
+        script.defer = true;
+        // Добавляем готовый скрипт в <head> документа
+        document.head.appendChild(script);
+      }
+      // Вызываем функцию, чтобы начать загрузку API
+      loadGoogleMapsAPI();
+    </script>
+
+</body>
+</html>
