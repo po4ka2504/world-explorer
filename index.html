@@ -17,9 +17,34 @@
     </div>
 
     <!-- Экран 1: Стартовое меню -->
-    <div id="start-screen" class="screen active">
+      <div id="start-screen" class="screen active">
         <h1>Geo Explorer</h1>
         <button id="start-btn" class="action-button">Начать игру</button>
+        <!-- ДОБАВЛЯЕМ КНОПКУ НАСТРОЕК -->
+        <button id="settings-btn" class="secondary-button">Настройки</button>
+    </div>
+
+    <!-- ДОБАВЛЯЕМ ЦЕЛЫЙ НОВЫЙ ЭКРАН НАСТРОЕК -->
+    <div id="settings-screen" class="screen">
+        <h2>Настройки Игры</h2>
+        
+        <div class="settings-section">
+            <h3>Таймер раунда:</h3>
+            <div class="radio-group">
+                <label><input type="radio" name="timer-setting" value="15"> 15 сек</label>
+                <label><input type="radio" name="timer-setting" value="30"> 30 сек</label>
+                <label><input type="radio" name="timer-setting" value="60" checked> 60 сек</label>
+                <label><input type="radio" name="timer-setting" value="100"> 100 сек</label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Зоны поиска:</h3>
+            <!-- Этот блок будет заполнен динамически из JS -->
+            <div id="zone-checkboxes" class="checkbox-group"></div>
+        </div>
+
+        <button id="save-settings-btn" class="action-button">Сохранить</button>
     </div>
 
     <!-- Экран 2: Игровой процесс -->
