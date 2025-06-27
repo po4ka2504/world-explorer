@@ -1,5 +1,3 @@
-const GOOGLE_API_KEY = "GOOGLE_API_KEY";
-
 const SEARCH_ZONES = [
     { name: "Western Europe", bounds: { sw: { lat: 36.0, lng: -10.0 }, ne: { lat: 60.0, lng: 20.0 } } },
     { name: "Eastern Europe", bounds: { sw: { lat: 43.0, lng: 20.0 }, ne: { lat: 60.0, lng: 40.0 } } },
