@@ -1,4 +1,4 @@
-const GOOGLE_API_KEY = "AIzaSyBI6VvqQVGyvhaPS5YX4XrnVLrrUJsdcqM";
+const GOOGLE_API_KEY = "GOOGLE_API_KEY";
 
 const SEARCH_ZONES = [
     {
