@@ -1,4 +1,4 @@
-/* style.css - RESPONSIVE UPDATE */
+/* style.css - FINAL RESPONSIVE UPDATE */
 
 /* --- General styles and reset --- */
 html, body {
@@ -21,7 +21,7 @@ html, body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 20px; /* Add padding for small screens */
+    padding: 20px;
 }
 
 .screen.active {
@@ -32,12 +32,11 @@ html, body {
 
 #loading-screen, #guess-screen, #result-screen, #settings-screen {
     background-color: #1f1f1f;
-    overflow-y: auto; /* Allow vertical scrolling on small screens */
+    overflow-y: auto;
 }
 
 h2 {
-    margin-bottom: 20px;
-    font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive font size */
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
 }
 
 /* --- Start Menu Screen --- */
@@ -47,15 +46,14 @@ h2 {
 }
 
 #start-screen h1 {
-    /* Responsive font size: min 2.5rem, preferred 10vw, max 4rem */
     font-size: clamp(2.5rem, 10vw, 4rem); 
     text-shadow: 2px 2px 8px #000;
 }
 
 /* --- Buttons --- */
 .action-button { 
-    font-size: clamp(1.2rem, 4vw, 1.8rem); /* Responsive font size */
-    padding: 15px 30px; /* Slightly smaller padding */
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    padding: 15px 30px;
     cursor: pointer;
     border: none;
     border-radius: 12px;
@@ -63,7 +61,7 @@ h2 {
     color: white;
     font-weight: bold;
     transition: transform 0.2s ease, background-color 0.2s;
-    white-space: nowrap; /* Prevent text from wrapping */
+    white-space: nowrap;
 }
 .action-button:hover {
     transform: scale(1.05);
@@ -74,7 +72,7 @@ h2 {
     background: none;
     border: 2px solid white;
     padding: 10px 20px;
-    font-size: clamp(0.9rem, 2.5vw, 1rem); /* Responsive font size */
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     color: white;
     border-radius: 8px;
     margin-top: 20px;
@@ -89,7 +87,7 @@ h2 {
 #game-screen {
     display: none;
     position: relative;
-    padding: 0; /* Remove padding from game screen itself */
+    padding: 0;
 }
 
 #street-view { 
@@ -99,116 +97,103 @@ h2 {
 
 #game-ui {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 10px; left: 10px;
     background-color: rgba(0, 0, 0, 0.75);
     padding: 8px 15px;
     border-radius: 10px;
-    font-size: clamp(1rem, 3vw, 1.5rem); /* Responsive font size */
+    font-size: clamp(1rem, 3vw, 1.5rem);
     text-align: left;
     pointer-events: none;
     z-index: 10;
     text-shadow: 1px 1px 2px black;
 }
-#game-ui p {
-    margin: 4px 0;
-}
+#game-ui p { margin: 4px 0; }
 
 #guess-now-btn {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 20px; right: 20px;
     z-index: 10;
-    padding: 10px 20px; /* Smaller button for mobile */
+    padding: 10px 20px;
     font-size: clamp(1rem, 3vw, 1.2rem);
 }
 
 .quit-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 10px; right: 10px;
     z-index: 10;
     background-color: rgba(220, 53, 69, 0.7);
-    border: none;
-    color: white;
+    border: none; color: white;
     padding: 8px 12px;
     font-size: clamp(0.8rem, 2.5vw, 1rem);
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.quit-button:hover {
-    background-color: rgba(220, 53, 69, 1);
-}
+.quit-button:hover { background-color: rgba(220, 53, 69, 1); }
 
 /* --- Settings Screen --- */
-#settings-screen {
-    justify-content: flex-start;
-}
+#settings-screen { justify-content: flex-start; }
 .settings-section {
     padding: 15px;
     margin-bottom: 15px;
-    width: 90%; /* Take more width on mobile */
+    width: 90%;
     max-width: 500px;
 }
-.radio-group label, .checkbox-group label {
-    font-size: clamp(1rem, 3.5vw, 1.2rem);
-}
-input[type="radio"], input[type="checkbox"] {
-    transform: scale(1.1);
+.radio-group label, .checkbox-group label { font-size: clamp(1rem, 3.5vw, 1.2rem); }
+input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
+
+/* --- Guess & Result Screens (Mobile First) --- */
+#guess-map { 
+    width: 100%;
+    max-width: 600px;
+    height: 60vh; /* Increased height for mobile */
+    border: 2px solid #333;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
-/* --- Guess & Result Screens --- */
-#guess-map, #result-map { 
-    width: 100%; /* Full width on mobile */
-    max-width: 600px;
-    height: 50vh; /* Use viewport height for map */
+#result-map {
+    width: 100%;
+    max-width: 500px; /* Default max width for mobile */
+    height: 40vh; /* Default height for mobile */
     border: 2px solid #333;
     border-radius: 8px;
     margin-bottom: 20px;
 }
 
 #result-screen {
-    justify-content: center; /* Re-center items */
+    justify-content: center; /
 }
-#result-screen h2 {
-    font-size: clamp(1.8rem, 6vw, 3rem);
-}
-#result-screen p {
-    font-size: clamp(1.2rem, 4vw, 2rem);
-}
-#result-screen .action-button {
-    margin-top: 15px;
-}
+#result-screen h2 { font-size: clamp(1.8rem, 6vw, 3rem); }
+#result-screen p { font-size: clamp(1.2rem, 4vw, 2rem); }
+#result-screen .action-button { margin-top: 15px; }
 
 
-/* --- MEDIA QUERIES for larger screens --- */
-/* This code applies ONLY when the screen width is 768px or more (tablets and desktops) */
+/* --- MEDIA QUERIES for larger screens (Tablets and Desktops) --- */
+/* This applies ONLY when screen width is 768px or more */
 @media (min-width: 768px) {
     .screen {
-        padding: 40px; /* Restore larger padding on big screens */
+        padding: 40px;
     }
 
     /* Make buttons bigger on desktop */
-    .action-button {
-        padding: 20px 40px;
-    }
-    #guess-now-btn {
-        padding: 15px 30px;
-    }
+    .action-button { padding: 20px 40px; }
+    #guess-now-btn { padding: 15px 30px; }
     
     /* Make in-game UI text bigger */
-    #game-ui {
-        top: 20px;
-        left: 20px;
-    }
-    .quit-button {
-        top: 20px;
-        right: 20px;
+    #game-ui { top: 20px; left: 20px; }
+    .quit-button { top: 20px; right: 20px; }
+    
+    /* Give guess map more space */
+    #guess-map {
+        height: 450px;
     }
     
-    /* Give maps a bit more space */
-    #guess-map, #result-map {
-        height: 400px;
+    
+    #result-map {
+        width: 70vw;         
+        height: 50vh;        
+        max-width: 900px;     
+        max-height: 500px;    
     }
 }

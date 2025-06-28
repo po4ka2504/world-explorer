@@ -1,49 +1,49 @@
-// --- ИСПРАВЛЕННЫЙ И УЛУЧШЕННЫЙ game.js ---
 
-// Глобальные переменные для доступа из разных функций
+
+// Global variables accessible from different functions
 let panorama;
-let actualLocation; // Переименовал для ясности (было currentLocation)
+let actualLocation; // Renamed for clarity (was currentLocation)
 let guessMap;
 let guessMarker;
 
-// Переменные состояния игры, которые будут сбрасываться
+// Game state variables that will be reset
 let stepCount;
 let timeLeft;
 let timerInterval;
 
-// Шаг 1: Инициализация и обработчики кнопок
-// Эта функция вызывается callback'ом из скрипта Google Maps
+// Step 1: Initialization and button handlers
+// This function is called as a callback from the Google Maps script
 window.initGame = function() {
-  console.log("Google Maps API загружен. Игра готова.");
+  console.log("Google Maps API loaded. Game is ready.");
 
   document.getElementById('start-btn').addEventListener('click', () => {
-    // Показываем "загрузку" и начинаем поиск локации
-    document.getElementById('start-btn').innerText = "Загрузка...";
+    // Show "loading" and start searching for a location
+    document.getElementById('start-btn').innerText = "Loading...";
     findRandomStreetViewLocation(startGame);
   });
 
   document.getElementById('play-again-btn').addEventListener('click', () => {
-    // Сразу начинаем новую игру
+    // Immediately start a new game
     findRandomStreetViewLocation(startGame);
   });
 
   document.getElementById('submit-guess-btn').addEventListener('click', () => {
-    // Проверяем, что маркер поставлен, и завершаем раунд
+    // Check that the marker is placed, and end the round
     if (!guessMarker) {
-      alert("Пожалуйста, поставьте маркер на карте, чтобы сделать догадку!");
+      alert("Please place a marker on the map to make a guess!");
       return;
     }
     const guessedLocation = guessMarker.getPosition();
     calculateAndShowResults(actualLocation, guessedLocation);
   });
-   // Обработчик для кнопки досрочного завершения раунда
+   // Handler for the "guess now" button to end the round early
     document.getElementById('guess-now-btn').addEventListener('click', () => {
-        console.log("Игрок решил угадать досрочно. Завершаем раунд.");
-        endRound(); // Вызываем уже существующую функцию!
+        console.log("Player decided to guess early. Ending the round.");
+        endRound(); // Calling the existing function!
     });  
 };
 
-// Функция для переключения между экранами
+// Function to switch between screens
 function switchScreen(screenId) {
   document.querySelectorAll('.screen').forEach(screen => {
     screen.style.display = 'none';
@@ -52,70 +52,70 @@ function switchScreen(screenId) {
 }
 
 function findRandomStreetViewLocation(callback, attempt = 1) {
-    console.log(`Попытка найти локацию №${attempt}...`);
+    console.log(`Attempting to find location #${attempt}...`);
     
-    // --- НОВАЯ ЛОГИКА ---
-    // 1. Случайно выбираем одну из зон поиска из файла config.js
+    // --- NEW LOGIC ---
+    // 1. Randomly select one of the search zones from the config.js file
     const randomZoneIndex = Math.floor(Math.random() * SEARCH_ZONES.length);
     const selectedZone = SEARCH_ZONES[randomZoneIndex];
     const bounds = selectedZone.bounds;
-    console.log(`Выбрана зона поиска: ${selectedZone.name}`);
+    console.log(`Selected search zone: ${selectedZone.name}`);
 
-    // 2. Генерируем случайные координаты ВНУТРИ выбранной зоны
+    // 2. Generate random coordinates INSIDE the selected zone
     const lat = bounds.sw.lat + Math.random() * (bounds.ne.lat - bounds.sw.lat);
     const lng = bounds.sw.lng + Math.random() * (bounds.ne.lng - bounds.sw.lng);
-    // --- КОНЕЦ НОВОЙ ЛОГИКИ ---
+    // --- END OF NEW LOGIC ---
 
     const randomLatLng = new google.maps.LatLng(lat, lng);
     const streetViewService = new google.maps.StreetViewService();
 
     streetViewService.getPanorama({
         location: randomLatLng,
-        radius: 50000, // Используем большой радиус, т.к. некоторые зоны могут быть "пустыми"
+        radius: 50000, // Use a large radius, as some zones might be "empty"
         source: 'outdoor'
     }, (data, status) => {
         if (status === 'OK') {
-            console.log("Успех! Локация найдена:", data.location.latLng.toString());
+            console.log("Success! Location found:", data.location.latLng.toString());
             callback(data.location.latLng);
         } else {
-            if (attempt < 15) { // Увеличим число попыток, т.к. зон стало больше
+            if (attempt < 15) { // Increase the number of attempts, as there are more zones
                 findRandomStreetViewLocation(callback, attempt + 1);
             } else {
-                alert("Не удалось найти подходящую локацию. Попробуйте еще раз.");
+                alert("Could not find a suitable location. Please try again.");
                 switchScreen('start-screen');
             }
         }
     });
 }
 
-// Шаг 3: Запуск основного игрового раунда
+// Step 3: Starting the main game round
 function startGame(location) {
-  // Сброс всех переменных состояния перед новым раундом
+  // Reset all state variables before a new round
   actualLocation = location;
   stepCount = 500;
   timeLeft = 100;
-  if (timerInterval) clearInterval(timerInterval); // Очищаем старый таймер, если он был
+  if (timerInterval) clearInterval(timerInterval); // Clear the old timer if it existed
 
-  // Сброс маркера с предыдущей игры
+  // Reset the marker from the previous game
   if (guessMarker) {
     guessMarker.setMap(null);
     guessMarker = null;
   }
   
-  // Возвращаем кнопку Start в исходное состояние для "Play Again"
-  document.getElementById('start-btn').innerText = "Начать игру";
+  // Return the Start button to its initial state for "Play Again"
+  document.getElementById('start-btn').innerText = "Start Game";
   
   switchScreen('game-screen');
-  updateUI(); // Первичное отображение UI (100 сек, 500 шагов)
+  updateUI(); // Initial UI display (100 sec, 500 steps)
 
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("street-view"), {
       position: location,
-      pov: { heading: Math.random() * 360, pitch: 0 }, // Случайный начальный обзор
-      // ВАЖНЫЕ ОГРАНИЧЕНИЯ ИНТЕРФЕЙСА
+      pov: { heading: Math.random() * 360, pitch: 0 }, // Random initial point of view
+      // IMPORTANT INTERFACE RESTRICTIONS
       addressControl: false,
       linksControl: false,
-      panControl: true, // Оставляем возможность крутить камерой
+      panControl: true, // Keep the ability to rotate the camera
       zoomControl: false,
       disableDefaultUI: true,
       clickToGo: true,
@@ -124,53 +124,53 @@ function startGame(location) {
     }
   );
 
-  // ИСПРАВЛЕНИЕ: Правильное имя события 'pano_changed'
+  // FIX: Correct event name 'pano_changed'
   panorama.addListener("pano_changed", () => {
     stepCount--;
-    updateUI(); // Обновляем UI после каждого шага
+    updateUI(); // Update the UI after each step
     if (stepCount <= 0) {
       endRound();
     }
   });
 
-  // Запуск таймера
+  // Start the timer
   timerInterval = setInterval(() => {
     timeLeft--;
-    updateUI(); // Обновляем UI каждую секунду
+    updateUI(); // Update the UI every second
     if (timeLeft <= 0) {
       endRound();
     }
   }, 1000);
 }
 
-// ДОБАВЛЕНО: Функция для обновления всего игрового интерфейса
+// ADDED: Function to update the entire game interface
 function updateUI() {
     document.getElementById('timer').innerText = timeLeft;
     document.getElementById('steps').innerText = stepCount;
 }
 
-// Шаг 4: Переход к угадыванию на карте
+// Step 4: Proceeding to guess on the map
 function endRound() {
-  clearInterval(timerInterval); // Обязательно останавливаем таймер!
-  console.log("Раунд окончен. Переход к карте для угадывания.");
+  clearInterval(timerInterval); // Be sure to stop the timer!
+  console.log("Round over. Proceeding to the guess map.");
   
   switchScreen('guess-screen');
 
   guessMap = new google.maps.Map(document.getElementById("guess-map"), {
     center: { lat: 20, lng: 0 },
     zoom: 2,
-    streetViewControl: false, // Отключаем иконку Street View на карте
-    mapTypeControl: false    // Отключаем выбор типа карты
+    streetViewControl: false, // Disable the Street View icon on the map
+    mapTypeControl: false    // Disable map type selection
   });
 
   guessMap.addListener("click", (e) => {
-    // Если маркер уже есть, перемещаем его. Если нет - создаем.
+    // If the marker already exists, move it. If not, create it.
     if (!guessMarker) {
       guessMarker = new google.maps.Marker({
         position: e.latLng,
         map: guessMap,
         animation: google.maps.Animation.DROP,
-        title: "Моя догадка"
+        title: "My Guess"
       });
     } else {
       guessMarker.setPosition(e.latLng);
@@ -178,9 +178,9 @@ function endRound() {
   });
 }
 
-// Шаг 5: Расчет и показ результатов
+// Step 5: Calculating and displaying results
 function calculateAndShowResults(actual, guessed) {
-    // Часть 1: Расчеты (остаются прежними)
+    // Part 1: Calculations (remain the same)
     const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(actual, guessed);
     const distanceInKm = distanceInMeters / 1000;
 
@@ -191,45 +191,45 @@ function calculateAndShowResults(actual, guessed) {
         score = Math.round(1000 * (1 - (distanceInKm - 10) / (500 - 10)));
     }
 
-    // Обновляем текст с очками и расстоянием
+    // Update the text with points and distance
     document.getElementById("distance-result").innerText = distanceInKm.toFixed(1);
     document.getElementById("score-result").innerText = score;
     
-    // Переключаемся на экран результатов
+    // Switch to the results screen
     switchScreen('result-screen');
 
-    // --- Часть 2: Создание карты результатов (НОВАЯ ЛОГИКА) ---
+    // --- Part 2: Creating the results map (NEW LOGIC) ---
 
-    // 1. Создаем объект карты в нашем новом div'е
+    // 1. Create a map object in our new div
     const resultsMap = new google.maps.Map(document.getElementById("result-map"), {
-        // Настройки, чтобы пользователь не мог ее двигать
+        // Settings to prevent the user from moving it
         gestureHandling: 'none',
         zoomControl: false,
         streetViewControl: false,
         mapTypeControl: false
     });
 
-    // 2. Создаем маркер для ПРАВИЛЬНОГО места (зеленый)
+    // 2. Create a marker for the CORRECT location (green)
     const actualMarker = new google.maps.Marker({
         position: actual,
         map: resultsMap,
-        title: "Настоящее место",
+        title: "Actual Location",
         icon: {
-            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" // Стандартная зеленая иконка Google
+            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" // Standard Google green icon
         }
     });
 
-    // 3. Создаем маркер для ДОГАДКИ игрока (красный)
+    // 3. Create a marker for the player's GUESS (red)
     const guessedMarker = new google.maps.Marker({
         position: guessed,
         map: resultsMap,
-        title: "Твоя догадка",
+        title: "Your Guess",
         icon: {
-            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png" // Стандартная красная иконка Google
+            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png" // Standard Google red icon
         }
     });
 
-    // 4. Рисуем линию между двумя точками
+    // 4. Draw a line between the two points
     const flightPath = new google.maps.Polyline({
         path: [actual, guessed],
         geodesic: true,
@@ -239,7 +239,7 @@ function calculateAndShowResults(actual, guessed) {
     });
     flightPath.setMap(resultsMap);
 
-    // 5. Автоматически масштабируем карту, чтобы ОБА маркера были видны
+    // 5. Automatically scale the map so that BOTH markers are visible
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(actual);
     bounds.extend(guessed);
