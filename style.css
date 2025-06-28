@@ -1,6 +1,6 @@
-/* style.css */
+/* style.css - FINAL RESPONSIVE UPDATE */
 
-/* General styles and reset */
+/* --- General styles and reset --- */
 html, body {
     height: 100%;
     margin: 0;
@@ -13,7 +13,7 @@ html, body {
 
 /* Base class for all game screens */
 .screen {
-    display: none; /* All screens are hidden by default */
+    display: none;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -21,74 +21,73 @@ html, body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    padding: 20px;
 }
 
-/* The active screen is visible as a flex container */
 .screen.active {
     display: flex;
 }
 
 /* --- Specific Screen Styles --- */
 
-/* Background for non-gameplay screens */
 #loading-screen, #guess-screen, #result-screen, #settings-screen {
     background-color: #1f1f1f;
+    overflow-y: auto;
 }
 
 h2 {
-    margin-bottom: 20px;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
 }
 
-/* Start Menu Screen */
+/* --- Start Menu Screen --- */
 #start-screen {
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://source.unsplash.com/random/1920x1080/?earth,space') no-repeat center center;
     background-size: cover;
 }
 
 #start-screen h1 {
-    font-size: 4em;
+    font-size: clamp(2.5rem, 10vw, 4rem); 
     text-shadow: 2px 2px 8px #000;
 }
 
-/* Main action button style */
+/* --- Buttons --- */
 .action-button { 
-    font-size: 1.8em; 
-    padding: 20px 40px; 
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    padding: 15px 30px;
     cursor: pointer;
     border: none;
     border-radius: 12px;
-    background-color: #1DB954; /* Signature green color */
+    background-color: #1DB954;
     color: white;
     font-weight: bold;
     transition: transform 0.2s ease, background-color 0.2s;
+    white-space: nowrap;
 }
-
 .action-button:hover {
     transform: scale(1.05);
     background-color: #1ed760;
 }
 
-/* Secondary button style (e.g., "Settings") */
 .secondary-button {
     background: none;
     border: 2px solid white;
     padding: 10px 20px;
-    font-size: 1em;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     color: white;
     border-radius: 8px;
     margin-top: 20px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-
 .secondary-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Gameplay Screen */
+/* --- Gameplay Screen --- */
 #game-screen {
-    display: none; /* Controlled directly by JS to avoid flicker */
+    display: none;
     position: relative;
+    padding: 0;
 }
 
 #street-view { 
@@ -96,125 +95,105 @@ h2 {
     height: 100%; 
 }
 
-/* In-game UI (timer, steps) */
 #game-ui {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 10px; left: 10px;
     background-color: rgba(0, 0, 0, 0.75);
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 10px;
-    font-size: 1.5em;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     text-align: left;
-    pointer-events: none; /* Allows clicks to pass through to the panorama */
+    pointer-events: none;
     z-index: 10;
     text-shadow: 1px 1px 2px black;
 }
+#game-ui p { margin: 4px 0; }
 
-#game-ui p {
-    margin: 5px 0;
-}
-
-/* Guess Now button style */
 #guess-now-btn {
     position: absolute;
-    bottom: 30px;
-    right: 30px;
+    bottom: 20px; right: 20px;
     z-index: 10;
+    padding: 10px 20px;
+    font-size: clamp(1rem, 3vw, 1.2rem);
 }
 
-/* Quit Game button style */
 .quit-button {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px; right: 10px;
     z-index: 10;
-    background-color: rgba(220, 53, 69, 0.7); /* Semi-transparent red */
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    font-size: 1em;
+    background-color: rgba(220, 53, 69, 0.7);
+    border: none; color: white;
+    padding: 8px 12px;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
+.quit-button:hover { background-color: rgba(220, 53, 69, 1); }
 
-.quit-button:hover {
-    background-color: rgba(220, 53, 69, 1); /* Opaque on hover */
-}
-
-/* Settings Screen */
-#settings-screen {
-    justify-content: flex-start;
-    padding-top: 50px;
-    overflow-y: auto; /* Allow scrolling if many zones are added */
-}
-
+/* --- Settings Screen --- */
+#settings-screen { justify-content: flex-start; }
 .settings-section {
-    background-color: rgba(0,0,0,0.2);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    width: 80%;
+    padding: 15px;
+    margin-bottom: 15px;
+    width: 90%;
     max-width: 500px;
 }
+.radio-group label, .checkbox-group label { font-size: clamp(1rem, 3.5vw, 1.2rem); }
+input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
 
-.settings-section h3 {
-    margin-top: 0;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-}
-
-.radio-group, .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-}
-
-.radio-group label, .checkbox-group label {
-    margin: 5px 0;
-    font-size: 1.2em;
-    cursor: pointer;
-}
-
-input[type="radio"], input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2);
-}
-
-#settings-screen .secondary-button {
-    margin-top: 10px;
-}
-
-/* Guessing Map Screen */
+/* --- Guess & Result Screens (Mobile First) --- */
 #guess-map { 
-    width: 90%; 
-    height: 75%; 
+    width: 100%;
+    max-width: 600px;
+    height: 60vh; /* Increased height for mobile */
     border: 2px solid #333;
     border-radius: 8px;
     margin-bottom: 20px;
-}
-
-/* Results Screen */
-#result-screen h2 {
-    font-size: 3em;
-}
-
-#result-screen p {
-    font-size: 2em;
-}
-
-#result-screen span {
-    color: #1DB954;
-    font-weight: bold;
 }
 
 #result-map {
-    width: 80%;
-    max-width: 600px;
-    height: 400px;
+    width: 100%;
+    max-width: 500px; /* Default max width for mobile */
+    height: 40vh; /* Default height for mobile */
     border: 2px solid #333;
     border-radius: 8px;
     margin-bottom: 20px;
+}
+
+#result-screen {
+    justify-content: center; /
+}
+#result-screen h2 { font-size: clamp(1.8rem, 6vw, 3rem); }
+#result-screen p { font-size: clamp(1.2rem, 4vw, 2rem); }
+#result-screen .action-button { margin-top: 15px; }
+
+
+/* --- MEDIA QUERIES for larger screens (Tablets and Desktops) --- */
+/* This applies ONLY when screen width is 768px or more */
+@media (min-width: 768px) {
+    .screen {
+        padding: 40px;
+    }
+
+    /* Make buttons bigger on desktop */
+    .action-button { padding: 20px 40px; }
+    #guess-now-btn { padding: 15px 30px; }
+    
+    /* Make in-game UI text bigger */
+    #game-ui { top: 20px; left: 20px; }
+    .quit-button { top: 20px; right: 20px; }
+    
+    /* Give guess map more space */
+    #guess-map {
+        height: 450px;
+    }
+    
+    
+    #result-map {
+        width: 70vw;         
+        height: 50vh;        
+        max-width: 900px;     
+        max-height: 500px;    
+    }
 }

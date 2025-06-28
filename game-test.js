@@ -199,7 +199,7 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
 function startGame(location) {
     // Reset all round-specific state variables
     actualLocation = location;
-    stepCount = 500;
+    stepCount = 100;
     timeLeft = gameSettings.timer; // <-- USING THE SETTING!
     
     if (timerInterval) clearInterval(timerInterval);
