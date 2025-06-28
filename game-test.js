@@ -141,15 +141,35 @@ function returnToMainMenu() {
 function findRandomStreetViewLocation(callback, attempt = 1) {
     console.log(`Finding location, attempt #${attempt}...`);
     
+    // --- NEW SMART LOGIC ---
     // 1. Filter all zones based on user settings
     const availableZones = SEARCH_ZONES.filter(zone => gameSettings.zones.includes(zone.name));
+    if (availableZones.length === 0) {
+        alert("No search zones selected in settings!");
+        returnToMainMenu();
+        return;
+    }
 
-    // 2. Randomly pick one of the AVAILABLE zones
+    // 2. Randomly pick one of the AVAILABLE top-level zones
     const randomZoneIndex = Math.floor(Math.random() * availableZones.length);
     const selectedZone = availableZones[randomZoneIndex];
-    const bounds = selectedZone.bounds;
-    console.log(`Searching in zone: ${selectedZone.name}`);
+    console.log(`Searching in top-level zone: ${selectedZone.name}`);
 
+    let bounds;
+    // 3. Check the type of the zone
+    if (selectedZone.type === "multi_box" && selectedZone.sub_zones) {
+        // If it's a multi-box zone, pick a RANDOM sub-zone from it
+        const randomSubZoneIndex = Math.floor(Math.random() * selectedZone.sub_zones.length);
+        const selectedSubZone = selectedZone.sub_zones[randomSubZoneIndex];
+        bounds = selectedSubZone.bounds;
+        console.log(`-> Picked high-density sub-zone: ${selectedSubZone.name}`);
+    } else {
+        // If it's a single_box zone, just use its main bounds
+        bounds = selectedZone.bounds;
+    }
+    // --- END OF NEW SMART LOGIC ---
+
+    // 4. Generate random coordinates INSIDE the chosen (or sub-chosen) bounds
     const lat = bounds.sw.lat + Math.random() * (bounds.ne.lat - bounds.sw.lat);
     const lng = bounds.sw.lng + Math.random() * (bounds.ne.lng - bounds.sw.lng);
 
@@ -270,9 +290,9 @@ function calculateAndShowResults(actual, guessed) {
     const distanceInKm = distanceInMeters / 1000;
 
     let score = 0;
-    if (distanceInKm <= 10) {
+    if (distanceInKm <= 100) {
         score = 1000;
-    } else if (distanceInKm < 500) {
+    } else if (distanceInKm < 1000) {
         score = Math.round(1000 * (1 - (distanceInKm - 10) / (500 - 10)));
     }
 
