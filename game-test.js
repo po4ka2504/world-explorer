@@ -336,7 +336,7 @@ function calculateAndShowResults(actual, guessed) {
     // Calculations
     const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(actual, guessed);
     const distanceInKm = distanceInMeters / 1000;
-    const score = calculateScore(distanceInKm); // Now this works!
+    const score = calculateScore(distanceInKm);
 
     // Update session state
     sessionScores.push({
@@ -346,6 +346,38 @@ function calculateAndShowResults(actual, guessed) {
     });
     totalSessionScore += score;
     
+    // --- NEW: Geocode to get and display location names ---
+    const geocoder = new google.maps.Geocoder();
+    function setLocationName(elementId, latLng) {
+        geocoder.geocode({ location: latLng }, (results, status) => {
+            const element = document.getElementById(elementId);
+            if (status === "OK" && results[0]) {
+                let city = null, region = null, country = null;
+                // Extract components from the geocoder result
+                for (const comp of results[0].address_components) {
+                    if (comp.types.includes("locality")) city = comp.long_name;
+                    if (comp.types.includes("administrative_area_level_1")) region = comp.long_name;
+                    if (comp.types.includes("country")) country = comp.long_name;
+                }
+                // Construct a readable location string (e.g., "Paris, France" or "California, United States")
+                let displayParts = [];
+                if (city) displayParts.push(city);
+                if (region && city !== region) displayParts.push(region); // Avoid "New York, New York"
+                if (country) displayParts.push(country);
+                
+                element.innerText = displayParts.length > 0 ? displayParts.join(', ') : "Unknown Location";
+            } else {
+                element.innerText = "Location not found";
+                console.error("Geocoder failed for " + elementId + " due to: " + status);
+            }
+        });
+    }
+
+    // Call the function for both the actual and guessed locations
+    setLocationName("actual-coords", actual);
+    setLocationName("guess-coords", guessed);
+    // --- END NEW ---
+
     // Update UI elements
     document.getElementById("distance-result").innerText = distanceInKm.toFixed(1);
     document.getElementById("score-result").innerText = score;
