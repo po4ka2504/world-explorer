@@ -62,13 +62,34 @@
     </div>
 
     <!-- Screen 5: Results -->
-    <div id="result-screen" class="screen">
-        <h2>Round Results</h2>
-        <div id="result-map"></div>
-        <p>Distance: <span id="distance-result">0</span> km</p>
-        <p>Your Score: <span id="score-result">0</span> points</p>
-        <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Play Again</button>
+<div id="result-screen" class="screen">
+    <h2>Round Complete!</h2>
+    <p>Distance: <span id="distance-result"></span> km</p>
+    <p>Round Score: <span id="score-result"></span></p>
+
+    <div id="result-map"></div>
+
+    
+       <!-- NEW: Leaderboard and Session Summary Section -->
+    <div class="session-summary-container">
+        <h3>Session for <span id="player-name-display"></span></h3>
+        <p style="font-size: 1.6em; font-weight: bold; color: #1DB954; margin: 10px 0;">
+            Total Score: <span id="total-score-value">0</span>
+        </p>
+        
+        <h4 style="margin-top: 20px;">Round History</h4>
+        <ul id="leaderboard-list">
+            <!-- Leaderboard items will be added here by JavaScript -->
+        </ul>
     </div>
+  
+    <button id="play-again-btn" class="action-button">Play Another Round</button>
+    <button id="end-session-btn" class="secondary-button">End Session & Return to Menu</button>
+</div>
+  
+
+    <button id="play-again-btn">Play Again</button>
+</div>
 
     <!-- --- DYNAMIC SCRIPT LOADING --- -->
      <script src="apiKey.js"></script>

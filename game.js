@@ -10,6 +10,7 @@ let guessMarker;
 let stepCount;
 let timeLeft;
 let timerInterval;
+let leaderboard = [];
 
 // Step 1: Initialization and button handlers
 // This function is called as a callback from the Google Maps script
@@ -21,6 +22,15 @@ window.initGame = function() {
     document.getElementById('start-btn').innerText = "Loading...";
     findRandomStreetViewLocation(startGame);
   });
+
+const savedLeaderboard = sessionStorage.getItem('leaderboard');
+  if (savedLeaderboard) {
+    leaderboard = JSON.parse(savedLeaderboard);
+    console.log("Loaded leaderboard from sessionStorage:", leaderboard);
+  } else {
+    console.log("No leaderboard found in sessionStorage. Starting fresh.");
+  }
+
 
   document.getElementById('play-again-btn').addEventListener('click', () => {
     // Immediately start a new game
@@ -54,7 +64,7 @@ function switchScreen(screenId) {
 function findRandomStreetViewLocation(callback, attempt = 1) {
     console.log(`Attempting to find location #${attempt}...`);
     
-    // --- NEW LOGIC ---
+    
     // 1. Randomly select one of the search zones from the config.js file
     const randomZoneIndex = Math.floor(Math.random() * SEARCH_ZONES.length);
     const selectedZone = SEARCH_ZONES[randomZoneIndex];
@@ -64,14 +74,14 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
     // 2. Generate random coordinates INSIDE the selected zone
     const lat = bounds.sw.lat + Math.random() * (bounds.ne.lat - bounds.sw.lat);
     const lng = bounds.sw.lng + Math.random() * (bounds.ne.lng - bounds.sw.lng);
-    // --- END OF NEW LOGIC ---
+  
 
     const randomLatLng = new google.maps.LatLng(lat, lng);
     const streetViewService = new google.maps.StreetViewService();
 
     streetViewService.getPanorama({
         location: randomLatLng,
-        radius: 50000, // Use a large radius, as some zones might be "empty"
+        radius: 10000, // Use a large radius, as some zones might be "empty"
         source: 'outdoor'
     }, (data, status) => {
         if (status === 'OK') {
@@ -92,7 +102,7 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
 function startGame(location) {
   // Reset all state variables before a new round
   actualLocation = location;
-  stepCount = 500;
+  stepCount = 100;
   timeLeft = 100;
   if (timerInterval) clearInterval(timerInterval); // Clear the old timer if it existed
 
@@ -106,7 +116,7 @@ function startGame(location) {
   document.getElementById('start-btn').innerText = "Start Game";
   
   switchScreen('game-screen');
-  updateUI(); // Initial UI display (100 sec, 500 steps)
+  updateUI(); // Initial UI display (100 sec, 100 steps)
 
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("street-view"), {
@@ -187,17 +197,47 @@ function calculateAndShowResults(actual, guessed) {
     let score = 0;
     if (distanceInKm <= 10) {
         score = 1000;
-    } else if (distanceInKm < 500) {
-        score = Math.round(1000 * (1 - (distanceInKm - 10) / (500 - 10)));
+    } else if (distanceInKm < 5000) {
+        // Original formula: Math.round(5000 * (1 - (distanceInKm - 10) / (500 - 10)));
+        // This formula seems to give negative scores for distance > 500km.
+        // Let's adjust the formula or cap the score at 0.
+        // A common approach is inverse linear scaling up to a certain distance, then 0.
+        // Let's use 5000km as the max distance for any points, and scale from 10km (1000 pts) to 5000km (0 pts).
+        const maxDistanceForPoints = 5000;
+        const minDistanceForMaxPoints = 10;
+
+        if (distanceInKm <= minDistanceForMaxPoints) {
+            score = 1000;
+        } else if (distanceInKm < maxDistanceForPoints) {
+             // Scale score linearly from 1000 down to 0 as distance goes from 10 to 5000
+            score = Math.round(1000 * (1 - (distanceInKm - minDistanceForMaxPoints) / (maxDistanceForPoints - minDistanceForMaxPoints)));
+            // Ensure score doesn't go below 0 due to rounding
+            score = Math.max(0, score);
+        } else {
+            score = 0; // No points for guesses beyond 5000km
+        }
     }
 
     // Update the text with points and distance
     document.getElementById("distance-result").innerText = distanceInKm.toFixed(1);
     document.getElementById("score-result").innerText = score;
     
+     // --- NEW: Add score to leaderboard, sort, save, and display ---
+    leaderboard.push({ score: score, distance: parseFloat(distanceInKm.toFixed(1)) }); // Store score and rounded distance
+    leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
+    // Optional: Keep only the top N scores
+    // leaderboard = leaderboard.slice(0, 10); // Keep top 10
+
+    sessionStorage.setItem('leaderboard', JSON.stringify(leaderboard)); // Save to sessionStorage
+    displayLeaderboard(); // Call function to display the updated leaderboard
+    // --- END NEW ---
+    
+    
     // Switch to the results screen
     switchScreen('result-screen');
 
+    
+    
     // --- Part 2: Creating the results map (NEW LOGIC) ---
 
     // 1. Create a map object in our new div
@@ -244,4 +284,22 @@ function calculateAndShowResults(actual, guessed) {
     bounds.extend(actual);
     bounds.extend(guessed);
     resultsMap.fitBounds(bounds);
+}
+
+function displayLeaderboard() {
+    const leaderboardList = document.getElementById('leaderboard-list'); // You'll need to add this element in your HTML
+    if (!leaderboardList) {
+        console.error("Leaderboard list element not found!");
+        return;
+    }
+
+    // Clear current list
+    leaderboardList.innerHTML = '';
+
+    // Populate list with current leaderboard data
+    leaderboard.forEach((entry, index) => {
+        const listItem = document.createElement('li');
+        listItem.innerText = `#${index + 1}: Score: ${entry.score} (Distance: ${entry.distance} km)`;
+        leaderboardList.appendChild(listItem);
+    });
 }

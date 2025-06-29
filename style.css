@@ -50,6 +50,32 @@ h2 {
     text-shadow: 2px 2px 8px #000;
 }
 
+/* --- Leaderboard Styles --- */
+#leaderboard-list {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin: 20px auto; /* Center the list and add vertical margin */
+    max-width: 500px; /* Match max-width of result map for consistency */
+    text-align: left; /* Align text to the left */
+    background-color: #2a2a2a; /* Slightly lighter background than screen */
+    border-radius: 8px;
+    overflow: hidden; /* Ensures border-radius is applied to children */
+}
+
+#leaderboard-list li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #333; /* Separator between items */
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+}
+
+#leaderboard-list li:last-child {
+    border-bottom: none; /* No border on the last item */
+}
+
+/* Optional: Add a subtle hover effect */
+#leaderboard-list li:hover {
+    background-color: #333;
+}
 /* --- Buttons --- */
 .action-button { 
     font-size: clamp(1.2rem, 4vw, 1.8rem);
@@ -196,4 +222,53 @@ input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
         max-width: 900px;     
         max-height: 500px;    
     }
+}
+/* --- NEW: Result Screen and Leaderboard Enhancements --- */
+
+/* Change result screen layout to be scrollable from the top */
+#result-screen {
+    justify-content: flex-start; /* Aligns content to the top */
+}
+
+/* Style the new container for the session summary and leaderboard */
+.session-summary-container {
+    width: 100%;
+    max-width: 500px; /* Consistent with other elements */
+    margin-top: 20px;
+    background-color: #1f1f1f; /* Slightly different shade */
+    padding: 15px;
+    border-radius: 8px;
+    box-sizing: border-box; /* Important for padding */
+}
+
+/* Style the "Total Score" text to make it stand out */
+#total-score-value {
+    color: #1DB954; /* Bright green like the action buttons */
+    font-weight: bold;
+}
+
+/* Add some spacing for the headers on the result screen */
+#result-screen h3, #result-screen h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+/*
+  Improve the leaderboard list styling.
+  Remove padding from the LI element itself, since the inner DIVs
+  now control the spacing for alignment.
+*/
+#leaderboard-list li {
+    padding: 0; /* Let the inner flex div handle padding */
+    font-size: clamp(0.9rem, 3vw, 1.1rem); /* Slightly smaller for density */
+}
+
+/* Style the inner div that the JavaScript creates inside each list item */
+#leaderboard-list li > div {
+    padding: 12px 15px;
+}
+
+/* Add a bit more margin between the two final buttons */
+#result-screen .secondary-button {
+    margin-top: 15px;
 }
