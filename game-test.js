@@ -34,6 +34,20 @@ let timerInterval;
 window.initGame = function() {
     console.log("Google Maps API loaded. Game is ready.");
 
+    // --- Language Initialization ---
+    // 1. Load the saved language from localStorage, or default to 'en'.
+    const savedLang = localStorage.getItem('geoGameLanguage') || 'en';
+    
+    // 2. Set the language and update the dropdown to show the current selection.
+    setLanguage(savedLang); 
+    document.getElementById('language-switcher').value = savedLang;
+
+    // 3. Add an event listener to the switcher to update the language on change.
+    document.getElementById('language-switcher').addEventListener('change', (e) => {
+        setLanguage(e.target.value);
+    });
+    // --- End of Language Initialization ---
+
     // Initial setup
     populateSettingsScreen();
     saveSettings(); // Save default settings on first launch
@@ -46,7 +60,7 @@ window.initGame = function() {
         totalSessionScore = 0;
 
         if (gameSettings.zones.length === 0) {
-            alert("Please select at least one search zone in the Settings!");
+            showTranslatedAlert("selectZonePrompt");
             return;
         }
         switchScreen('loading-screen');
@@ -65,7 +79,7 @@ window.initGame = function() {
     // --- In-Game Action Button Handlers ---
     document.getElementById('submit-guess-btn').addEventListener('click', () => {
         if (!guessMarker) {
-            alert("Please place a marker on the map to make a guess!");
+            showTranslatedAlert("placeMarkerPrompt");
             return;
         }
         const guessedLocation = guessMarker.getPosition();
@@ -80,7 +94,7 @@ window.initGame = function() {
     
     document.getElementById('save-settings-btn').addEventListener('click', () => {
         saveSettings();
-        alert("Settings saved!");
+        showTranslatedAlert("settingsSaved");
         switchScreen('start-screen');
     });
 };
@@ -105,6 +119,48 @@ function switchScreen(screenId) {
 function updateUI() {
     document.getElementById('timer').innerText = timeLeft;
     document.getElementById('steps').innerText = stepCount;
+}
+
+// --- Localization Helpers ---
+
+/**
+ * Applies translations to all elements with a 'data-translate-key' attribute.
+ */
+function applyTranslations() {
+    // Translate standard elements
+    document.querySelectorAll('[data-translate-key]').forEach(element => {
+        const key = element.getAttribute('data-translate-key');
+        element.innerText = translations[currentLanguage][key] || translations['en'][key];
+    });
+
+    // Translate elements that serve as placeholders (like "Loading...")
+    document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-translate-key-placeholder');
+        element.innerText = translations[currentLanguage][key] || translations['en'][key];
+    });
+    
+    // Manually update parts of the UI that don't use data-attributes
+    populateSettingsScreen();
+    updateLeaderboardUI();
+}
+
+/**
+ * Displays an alert with a translated message.
+ * @param {string} key - The translation key for the alert message.
+ */
+function showTranslatedAlert(key) {
+    const message = translations[currentLanguage][key] || translations['en'][key];
+    alert(message);
+}
+
+/**
+ * Sets the current language, saves the choice to localStorage, and applies the new translations.
+ * @param {string} lang - The language code to set (e.g., 'en', 'de').
+ */
+function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('geoGameLanguage', lang); // Save the user's choice
+    applyTranslations(); // Update the UI with the new language
 }
 
 
@@ -207,11 +263,11 @@ function populateSettingsScreen() {
     if (!container) return;
     container.innerHTML = '';
 
-    const allCheckboxHtml = `<label style="font-weight: bold;"><input type="checkbox" id="all-zones-checkbox"> Select All</label>`;
+    const selectAllText = translations[currentLanguage].select_all || translations['en'].select_all;
+    const allCheckboxHtml = `<label style="font-weight: bold;"><input type="checkbox" id="all-zones-checkbox"> ${selectAllText}</label>`;
     container.insertAdjacentHTML('beforeend', allCheckboxHtml);
 
     SEARCH_ZONES.forEach(zone => {
-       
         const checked = gameSettings.zones.includes(zone.name) ? 'checked' : '';
         const checkboxHtml = `<label><input type="checkbox" class="zone-checkbox" value="${zone.name}" ${checked}> ${zone.name}</label>`;
         container.insertAdjacentHTML('beforeend', checkboxHtml);
@@ -246,7 +302,7 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
     
     const availableZones = SEARCH_ZONES.filter(zone => gameSettings.zones.includes(zone.name));
     if (availableZones.length === 0) {
-        alert("No search zones selected in settings!");
+        showTranslatedAlert("selectZonePrompt");
         returnToMainMenu();
         return;
     }
@@ -278,7 +334,7 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
             if (attempt < 15) {
                 findRandomStreetViewLocation(callback, attempt + 1);
             } else {
-                alert("Could not find a suitable location. Please try again.");
+                showTranslatedAlert("locationNotFound");
                 returnToMainMenu();
             }
         }
@@ -291,7 +347,6 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
 // Functions that calculate score, update leaderboards, and display results.
 // =================================================================================
 
-// **FIXED**: This function is now defined before it is called.
 // Calculates score based on distance using an improved formula.
 function calculateScore(distanceInKm) {
     const MAX_SCORE = 5000;
@@ -305,7 +360,6 @@ function calculateScore(distanceInKm) {
     return Math.round(score);
 }
 
-// **FIXED**: This function is also defined before it is called.
 // Populates the session leaderboard on the results screen.
 function updateLeaderboardUI() {
     const leaderboardList = document.getElementById('leaderboard-list');
@@ -314,14 +368,19 @@ function updateLeaderboardUI() {
     leaderboardList.innerHTML = ''; 
 
     if (sessionScores.length === 0) {
-        leaderboardList.innerHTML = '<li>Play a round to see your history!</li>';
+        // This part won't be visible on the first round, but is good for subsequent rounds
         return;
     }
     
     const header = document.createElement('li');
     header.style.fontWeight = 'bold';
     header.style.borderBottom = '2px solid #555';
-    header.innerHTML = `<div style="display: flex; justify-content: space-between; padding: 0 10px;"><span>Round</span><span>Distance</span><span>Score</span></div>`;
+    
+    const roundText = translations[currentLanguage].round || translations['en'].round;
+    const distanceText = translations[currentLanguage].distance || translations['en'].distance;
+    const scoreText = translations[currentLanguage].roundScore || translations['en'].roundScore;
+
+    header.innerHTML = `<div style="display: flex; justify-content: space-between; padding: 0 10px;"><span>${roundText}</span><span>${distanceText}</span><span>${scoreText}</span></div>`;
     leaderboardList.appendChild(header);
 
     sessionScores.forEach(item => {
@@ -346,37 +405,33 @@ function calculateAndShowResults(actual, guessed) {
     });
     totalSessionScore += score;
     
-    // --- NEW: Geocode to get and display location names ---
+    // Geocode to get and display location names
     const geocoder = new google.maps.Geocoder();
     function setLocationName(elementId, latLng) {
         geocoder.geocode({ location: latLng }, (results, status) => {
             const element = document.getElementById(elementId);
             if (status === "OK" && results[0]) {
                 let city = null, region = null, country = null;
-                // Extract components from the geocoder result
                 for (const comp of results[0].address_components) {
                     if (comp.types.includes("locality")) city = comp.long_name;
                     if (comp.types.includes("administrative_area_level_1")) region = comp.long_name;
                     if (comp.types.includes("country")) country = comp.long_name;
                 }
-                // Construct a readable location string (e.g., "Paris, France" or "California, United States")
                 let displayParts = [];
                 if (city) displayParts.push(city);
-                if (region && city !== region) displayParts.push(region); // Avoid "New York, New York"
+                if (region && city !== region) displayParts.push(region);
                 if (country) displayParts.push(country);
                 
-                element.innerText = displayParts.length > 0 ? displayParts.join(', ') : "Unknown Location";
+                element.innerText = displayParts.length > 0 ? displayParts.join(', ') : (translations[currentLanguage].locationNotFound_Geocode || "Unknown Location");
             } else {
-                element.innerText = "Location not found";
+                element.innerText = translations[currentLanguage].locationNotFound_Geocode || "Location not found";
                 console.error("Geocoder failed for " + elementId + " due to: " + status);
             }
         });
     }
 
-    // Call the function for both the actual and guessed locations
     setLocationName("actual-coords", actual);
     setLocationName("guess-coords", guessed);
-    // --- END NEW ---
 
     // Update UI elements
     document.getElementById("distance-result").innerText = distanceInKm.toFixed(1);

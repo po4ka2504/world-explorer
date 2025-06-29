@@ -294,3 +294,31 @@ input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
 #result-screen .secondary-button {
     margin-top: 15px;
 }
+
+/* --- Language Switcher --- */
+.language-switcher-container {
+    margin-bottom: 25px; /* Adds spacing before the buttons */
+    order: -1; /* This moves the language switcher ABOVE the other buttons on the flex start-screen */
+}
+
+#language-switcher {
+    background-color: #2a2a2a; /* Dark background */
+    color: white; /* White text */
+    padding: 10px 15px; /* Inner padding for size and comfort */
+    border: 1px solid #555; /* A thin border */
+    border-radius: 8px; /* Rounded corners, like other elements */
+    font-size: 1rem; /* Font size */
+    cursor: pointer; /* Change cursor to a hand on hover */
+    transition: border-color 0.2s; /* Smooth transition for the border */
+}
+
+/* Style for when the mouse is hovering over the element */
+#language-switcher:hover {
+    border-color: #888;
+}
+
+/* Remove the default outline and add our own on focus */
+#language-switcher:focus {
+    outline: none;
+    border-color: #1DB954; /* Highlight with the main action color */
+}
