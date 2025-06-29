@@ -112,7 +112,7 @@ To run this project locally, follow these steps:
 
 ## 🤖 Development Note
 
-This game was created with the assistance of **Google's Gemini 1.5 Pro model** via **Google AI Studio**. The development process involved multiple iterations with the AI, using a high **temperature parameter of 1.2** to encourage creative and diverse code suggestions. The AI-generated code served as a strong foundation, which was then refined with minor manual fixes and adjustments to achieve the final, functional application.
+This game was created with the assistance of **Google's gemini-2.5-pro (as of June 29, 2025)** via **Google AI Studio**. The development process involved multiple iterations with the AI, using a high **temperature parameter of 1.2** to encourage creative and diverse code suggestions. The AI-generated code served as a strong foundation, which was then refined with minor manual fixes and adjustments to achieve the final, functional application.
 
 ---
 
