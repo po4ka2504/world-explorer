@@ -5,8 +5,8 @@
 
 // --- Game Settings (configurable by player) ---
 let gameSettings = {
-    timer: 60,
-    zones: []
+    timer: 100,
+    zones: ["Europe (East)", "Europe (West & Central)"]
 };
 
 // --- Game State (reset every new session) ---
@@ -207,14 +207,16 @@ function populateSettingsScreen() {
     if (!container) return;
     container.innerHTML = '';
 
-    const allCheckboxHtml = `<label style="font-weight: bold;"><input type="checkbox" id="all-zones-checkbox" checked> Select All</label>`;
+    const allCheckboxHtml = `<label style="font-weight: bold;"><input type="checkbox" id="all-zones-checkbox"> Select All</label>`;
     container.insertAdjacentHTML('beforeend', allCheckboxHtml);
 
     SEARCH_ZONES.forEach(zone => {
-        const checkboxHtml = `<label><input type="checkbox" class="zone-checkbox" value="${zone.name}" checked> ${zone.name}</label>`;
+       
+        const checked = gameSettings.zones.includes(zone.name) ? 'checked' : '';
+        const checkboxHtml = `<label><input type="checkbox" class="zone-checkbox" value="${zone.name}" ${checked}> ${zone.name}</label>`;
         container.insertAdjacentHTML('beforeend', checkboxHtml);
     });
-    
+
     document.getElementById('all-zones-checkbox').addEventListener('change', (e) => {
         document.querySelectorAll('.zone-checkbox').forEach(cb => cb.checked = e.target.checked);
     });
