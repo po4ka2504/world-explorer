@@ -141,6 +141,7 @@ function startGame(location) {
             clickToGo: true,
             fullscreenControl: false,
             enableCloseButton: false,
+            motionTracking: false,
         }
     );
 
