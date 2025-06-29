@@ -1,6 +1,7 @@
 # 🌍 World Explorer - A Geo-Guessing Game
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/po4ka2504)
 
 **World Explorer** is an exciting web-based game inspired by GeoGuessr. Players are shown a random Google Street View location and their mission is to guess where they are by placing a marker on a world map. The closer your guess is to the actual location, the more points you score!
 
