@@ -88,6 +88,9 @@ window.initGame = function() {
 
     document.getElementById('guess-now-btn').addEventListener('click', endRound);
 
+    // --- Hint Button Handler ---
+    document.getElementById('hint-btn').addEventListener('click', showCountryHint);
+
     // --- Settings Screen Handlers ---
     document.getElementById('settings-btn').addEventListener('click', () => switchScreen('settings-screen'));
     document.getElementById('back-to-main-btn').addEventListener('click', () => switchScreen('start-screen'));
@@ -175,6 +178,10 @@ function startGame(location) {
     actualLocation = location;
     stepCount = 100;
     timeLeft = gameSettings.timer;
+    
+    // Re-enable the hint button for the new round
+    const hintButton = document.getElementById('hint-btn');
+    hintButton.disabled = false;
     
     if (timerInterval) clearInterval(timerInterval);
     if (guessMarker) {
@@ -338,6 +345,41 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
                 showTranslatedAlert("locationNotFound");
                 returnToMainMenu();
             }
+        }
+    });
+}
+
+// --- Hint Functionality ---
+function showCountryHint() {
+    if (!actualLocation) return;
+
+    const hintButton = document.getElementById('hint-btn');
+    hintButton.disabled = true;
+
+    // Reduce time by 30%
+    timeLeft = Math.floor(timeLeft * 0.7);
+    updateUI();
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: actualLocation }, (results, status) => {
+        if (status === "OK" && results[0]) {
+            let country = null;
+            for (const component of results[0].address_components) {
+                if (component.types.includes("country")) {
+                    country = component.long_name;
+                    break;
+                }
+            }
+            
+            if (country) {
+                const hintPrefix = translations[currentLanguage]?.countryHint || "The country is: ";
+                alert(hintPrefix + country);
+            } else {
+                showTranslatedAlert("countryNotFound");
+            }
+        } else {
+            console.error("Geocoder failed for hint due to: " + status);
+            showTranslatedAlert("geocodeError");
         }
     });
 }
