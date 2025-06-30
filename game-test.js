@@ -198,6 +198,7 @@ function startGame(location) {
             fullscreenControl: false,
             enableCloseButton: false,
             motionTracking: false,
+             showRoadLabels: false,
         }
     );
 
