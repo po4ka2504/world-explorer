@@ -6,26 +6,49 @@
     <title>Geo Explorer Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
     <!-- Screen 0: Loading -->
     <div id="loading-screen" class="screen">
-        <h2>Finding an interesting place...</h2>
+        <h2 data-translate-key="loading">Finding an interesting place...</h2>
     </div>
 
     <!-- Screen 1: Start Menu -->
     <div id="start-screen" class="screen active">
         <h1>Geo Explorer</h1>
-        <button id="start-btn" class="action-button">Start Game</button>
-        <button id="settings-btn" class="secondary-button">Settings</button>
+        
+        <!-- FIXED: Moved the switcher INSIDE the start screen -->
+        <div class="language-switcher-container">
+            <select id="language-switcher">
+              <option value="uk">Українська</option>
+                 <option value="en">English</option>
+                <option value="nl">Nederlands</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pl">Polski</option>
+                <option value="ar">العربية</option>
+                <option value="zh">中文</option>
+                <option value="hi">हिन्दी</option>                    
+                <option value="pt">Português</option>
+                <option value="es">Español</option>
+                <option value="sv">Svenska</option>
+                <option value="tr">Türkçe</option>              
+                <option value="it">Italiano</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>          
+            </select>
+        </div>
+        
+        <button id="start-btn" class="action-button" data-translate-key="startGame">Start Game</button>
+        <button id="settings-btn" class="secondary-button" data-translate-key="settings">Settings</button>
     </div>
 
     <!-- Screen 2: Settings -->
     <div id="settings-screen" class="screen">
-        <h2>Game Settings</h2>
+        <h2 data-translate-key="gameSettings">Game Settings</h2>
         
         <div class="settings-section">
-            <h3>Round Timer:</h3>
+            <h3 data-translate-key="roundTimer">Round Timer:</h3>
             <div class="radio-group">
                 <label><input type="radio" name="timer-setting" value="15"> 15 sec</label>
                 <label><input type="radio" name="timer-setting" value="30"> 30 sec</label>
@@ -35,54 +58,115 @@
         </div>
 
         <div class="settings-section">
-            <h3>Search Zones:</h3>
+            <h3 data-translate-key="searchZones">Search Zones:</h3>
             <div id="zone-checkboxes" class="checkbox-group"></div>
         </div>
 
-        <button id="save-settings-btn" class="action-button">Save</button>
-        <button id="back-to-main-btn" class="secondary-button">Back to Menu</button>
+        <button id="save-settings-btn" class="action-button" data-translate-key="save">Save</button>
+        <button id="back-to-main-btn" class="secondary-button" data-translate-key="backToMenu">Back to Menu</button>
     </div>
 
     <!-- Screen 3: Gameplay -->
     <div id="game-screen" class="screen">
         <div id="street-view"></div>
         <div id="game-ui">
-            <p>Time: <span id="timer">100</span>s</p>
-            <p>Moves: <span id="steps">500</span></p>
+            <!-- FIXED: Added keys to translatable text -->
+            <p><span data-translate-key="time">Time</span>: <span id="timer">100</span>s</p>
+            <p><span data-translate-key="moves">Moves</span>: <span id="steps">500</span></p>
         </div>
-        <button id="quit-game-btn" class="quit-button">Main Menu</button>
-        <button id="guess-now-btn" class="action-button">Guess!</button>
+        <button id="quit-game-btn" class="quit-button" data-translate-key="quitGame">Main Menu</button>
+        <button id="guess-now-btn" class="action-button" data-translate-key="guessNow">Guess!</button>
     </div>
     
     <!-- Screen 4: Guessing Map -->
     <div id="guess-screen" class="screen">
-        <h2>Where do you think you are?</h2>
-        <div id="guess-map"></div>
-        <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;">Confirm Guess</button>
+        <h2 data-translate-key="whereAreYou">Where do you think you are?</h2>
+        <div class="map-container">
+            <div id="guess-map"></div>
+        </div>
+        <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;" data-translate-key="confirmGuess">Confirm Guess</button>
     </div>
 
     <!-- Screen 5: Results -->
     <div id="result-screen" class="screen">
-        <h2>Round Results</h2>
-        <div id="result-map"></div>
-        <p>Distance: <span id="distance-result">0</span> km</p>
-        <p>Your Score: <span id="score-result">0</span> points</p>
-        <button id="play-again-btn" class="action-button" style="margin-top: 20px;">Play Again</button>
-    </div>
+        <h2 data-translate-key="roundComplete">Round Complete!</h2>
+        <p><span data-translate-key="distance">Distance</span>: <span id="distance-result"></span> km</p>
+        <p><span data-translate-key="roundScore">Round Score</span>: <span id="score-result"></span></p>
 
+        <div class="result-content-wrapper">
+            <div id="location-info">
+                <div>
+                    <strong data-translate-key="targetLocation">Target Location:</strong>
+                    <span id="actual-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
+                </div>
+                <div>
+                    <strong data-translate-key="yourGuess">Your Guess:</strong>
+                    <span id="guess-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
+                </div>
+            </div>
+          
+            <div id="result-map"></div>
+
+            <div class="session-summary-container">
+            <h3><span data-translate-key="sessionFor">Session for</span> <span id="player-name-display"></span></h3>
+            <p style="font-size: 1.6em; font-weight: bold; color: #1DB954; margin: 10px 0;">
+                <span data-translate-key="totalScore">Total Score:</span> <span id="total-score-value">0</span>
+            </p>
+            
+            <h4 style="margin-top: 20px;" data-translate-key="roundHistory">Round History</h4>
+            <ul id="leaderboard-list">
+                <!-- Leaderboard items will be added here by JavaScript -->
+            </ul>
+        </div>
+        </div>
+    
+        <button id="play-again-btn" class="action-button" data-translate-key="playAnotherRound">Play Another Round</button>
+        <button id="end-session-btn" class="secondary-button" data-translate-key="endSession">End Session & Return to Menu</button>
+    </div>
+  
     <!-- --- DYNAMIC SCRIPT LOADING --- -->
-     <script src="apiKey.js"></script>
+    <script src="apiKey.js"></script>
     <script src="config.js"></script>
+    
+    <!-- FIXED: translations.js MUST be loaded BEFORE game-test.js -->
+    <script src="translations.js"></script>
     <script src="game-test.js"></script>
+
     <script>
-      function loadGoogleMapsAPI() {
+      // This block remains unchanged
+      function initializeMapScript(apiKey) {
+        if (!apiKey) {
+          console.error("API Key is missing. Cannot load map.");
+          document.body.innerHTML = '<h1>Error: API Key is missing.</h1><p>Site owner: Please configure the GOOGLE_API_KEY environment variable in Netlify.</p>';
+          return;
+        }
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=geometry&callback=initGame`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initGame`;
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);
       }
-      loadGoogleMapsAPI();
+
+      async function loadApiAndInitialize() {
+        try {
+          const response = await fetch('/.netlify/functions/get-key');
+          if (!response.ok) {
+            throw new Error(`Netlify function failed with status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Success! Using API key from Netlify function.");
+          initializeMapScript(data.apiKey);
+        } catch (error) {
+          console.warn("Could not fetch key from Netlify. This is normal for local development. Falling back to apiKey.js.");
+          if (typeof GOOGLE_API_KEY !== 'undefined') {
+            initializeMapScript(GOOGLE_API_KEY);
+          } else {
+            console.error("Local GOOGLE_API_KEY not found in apiKey.js.");
+            document.body.innerHTML = '<h1>Error: Local API Key is not defined.</h1>';
+          }
+        }
+      }
+      loadApiAndInitialize();
     </script>
 
 </body>
