@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <canvas id="fractal-canvas"></canvas>
     <!-- Screen 0: Loading -->
     <div id="loading-screen" class="screen">
         <h2 data-translate-key="loading">Finding an interesting place...</h2>
@@ -45,25 +46,29 @@
 
     <!-- Screen 2: Settings -->
     <div id="settings-screen" class="screen">
-        <h2 data-translate-key="gameSettings">Game Settings</h2>
-        
-        <div class="settings-section">
-            <h3 data-translate-key="roundTimer">Round Timer:</h3>
-            <div class="radio-group">
-                <label><input type="radio" name="timer-setting" value="15"> 15 sec</label>
-                <label><input type="radio" name="timer-setting" value="30"> 30 sec</label>
-                <label><input type="radio" name="timer-setting" value="60" checked> 60 sec</label>
-                <label><input type="radio" name="timer-setting" value="100"> 100 sec</label>
+        <div class="settings-container">
+            <h2 data-translate-key="gameSettings">Game Settings</h2>
+            
+            <div class="settings-section">
+                <h3 data-translate-key="roundTimer">Round Timer:</h3>
+                <div class="radio-group">
+                    <label><input type="radio" name="timer-setting" value="15"> 15 sec</label>
+                    <label><input type="radio" name="timer-setting" value="30"> 30 sec</label>
+                    <label><input type="radio" name="timer-setting" value="60" checked> 60 sec</label>
+                    <label><input type="radio" name="timer-setting" value="100"> 100 sec</label>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3 data-translate-key="searchZones">Search Zones:</h3>
+                <div id="zone-checkboxes" class="checkbox-group"></div>
+            </div>
+
+            <div class="settings-buttons">
+                <button id="save-settings-btn" class="action-button" data-translate-key="save">Save</button>
+                <button id="back-to-main-btn" class="secondary-button" data-translate-key="backToMenu">Back to Menu</button>
             </div>
         </div>
-
-        <div class="settings-section">
-            <h3 data-translate-key="searchZones">Search Zones:</h3>
-            <div id="zone-checkboxes" class="checkbox-group"></div>
-        </div>
-
-        <button id="save-settings-btn" class="action-button" data-translate-key="save">Save</button>
-        <button id="back-to-main-btn" class="secondary-button" data-translate-key="backToMenu">Back to Menu</button>
     </div>
 
     <!-- Screen 3: Gameplay -->
@@ -169,5 +174,7 @@
       loadApiAndInitialize();
     </script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="background-animation.js"></script>
 </body>
 </html>

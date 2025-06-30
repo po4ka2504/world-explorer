@@ -1,3 +1,13 @@
+
+#fractal-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Changed from -1 to 1 */
+}
+
 /* style.css - FINAL RESPONSIVE UPDATE */
 
 /* --- General styles and reset --- */
@@ -22,6 +32,8 @@ html, body {
     justify-content: center;
     flex-direction: column;
     padding: 20px;
+    position: relative; /* Added */
+    z-index: 2; /* Added */
 }
 
 .screen.active {
@@ -41,8 +53,7 @@ h2 {
 
 /* --- Start Menu Screen --- */
 #start-screen {
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://source.unsplash.com/random/1920x1080/?earth,space') no-repeat center center;
-    background-size: cover;
+    background: transparent;
 }
 
 #start-screen h1 {
@@ -185,15 +196,47 @@ h2 {
 .quit-button:hover { background-color: rgba(220, 53, 69, 1); }
 
 /* --- Settings Screen --- */
-#settings-screen { justify-content: flex-start; }
-.settings-section {
-    padding: 15px;
-    margin-bottom: 15px;
-    width: 90%;
-    max-width: 500px;
+#settings-screen {
+    justify-content: center; /* Center content vertically */
+    padding: 40px 20px; /* Add more vertical padding */
+    overflow-y: auto; /* Allow scrolling if content overflows */
 }
-.radio-group label, .checkbox-group label { font-size: clamp(1rem, 3.5vw, 1.2rem); }
-input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px; /* Limit the overall width of the settings content */
+}
+
+.settings-buttons {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically on small screens */
+    gap: 15px; /* Space between buttons */
+    margin-top: 20px;
+    width: 100%;
+    max-width: 500px; /* Match settings section width */
+}
+
+.settings-buttons .action-button,
+.settings-buttons .secondary-button {
+    width: 100%; /* Make buttons take full width of their container */
+    margin-top: 0; /* Reset margin as gap handles spacing */
+}
+
+@media (min-width: 768px) {
+    .settings-buttons {
+        flex-direction: row; /* Arrange buttons horizontally on larger screens */
+        justify-content: center; /* Center buttons */
+    }
+
+    .settings-buttons .action-button,
+    .settings-buttons .secondary-button {
+        width: auto; /* Allow buttons to size naturally */
+        min-width: 180px; /* Ensure a minimum width for better appearance */
+    }
+}
 
 /* --- Guess & Result Screens (Mobile First) --- */
 /* --- Guess & Result Screens (Mobile First) --- */
