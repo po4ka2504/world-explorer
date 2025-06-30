@@ -119,6 +119,7 @@ function startGame(location) {
       zoomControl: false,
       disableDefaultUI: true,
       clickToGo: true,
+      showRoadLabels: false,
       fullscreenControl: false,
       enableCloseButton: false,
     }
