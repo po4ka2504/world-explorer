@@ -196,31 +196,58 @@ h2 {
 input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
 
 /* --- Guess & Result Screens (Mobile First) --- */
+/* --- Guess & Result Screens (Mobile First) --- */
+.map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 #guess-map { 
     width: 100%;
-    max-width: 600px;
-    height: 60vh; /* Increased height for mobile */
+    max-width: 90vw; /* Even larger on mobile */
+    height: 70vh; /* Even larger on mobile */
     border: 2px solid #333;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0; /* Adjusted for flex layout */
 }
 
 #result-map {
     width: 100%;
-    max-width: 500px; /* Default max width for mobile */
-    height: 40vh; /* Default height for mobile */
+    max-width: 90vw; /* Even larger on mobile */
+    height: 50vh; /* Even larger on mobile */
     border: 2px solid #333;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0; /* Adjusted for flex layout */
 }
 
 #result-screen {
-    justify-content: flex-start; /* Aligns content to the top */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center items horizontally */
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically by default */
+    overflow-y: auto; /* Allow scrolling if content overflows */
 }
 #result-screen h2 { font-size: clamp(1.8rem, 6vw, 3rem); }
 #result-screen p { font-size: clamp(1.2rem, 4vw, 2rem); margin: 8px 0; }
 #result-screen .action-button { margin-top: 15px; }
 
+/* Wrapper for map, location info, and summary */
+.result-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+}
+
+.result-content-wrapper > div {
+    margin: 0 15px; /* Space between map, info, and summary */
+}
 
 /* --- MEDIA QUERIES for larger screens (Tablets and Desktops) --- */
 /* This applies ONLY when screen width is 768px or more */
@@ -239,17 +266,85 @@ input[type="radio"], input[type="checkbox"] { transform: scale(1.1); }
     
     /* Give guess map more space */
     #guess-map {
-        height: 450px;
+        height: 600px; /* Larger height for desktop */
+        max-width: 800px; /* Larger max-width for desktop */
     }
-    
     
     #result-map {
         width: 70vw;         
-        height: 50vh;        
-        max-width: 900px;     
-        max-height: 500px;    
+        height: 60vh; /* Larger height for desktop */
+        max-width: 1000px;     
+        max-height: 600px;    
+    }
+
+    .result-content-wrapper {
+        flex-direction: row; /* Arrange items horizontally */
+        align-items: flex-start; /* Align items to the top */
     }
 }
+
+/* --- Ultrawide Monitor Specific Styles --- */
+@media (min-width: 1600px) {
+    #result-screen {
+        flex-direction: row; /* Arrange items horizontally */
+        flex-wrap: wrap; /* Allow items to wrap to the next line */
+        justify-content: center; /* Center items horizontally */
+        align-items: flex-start; /* Align items to the top */
+        padding: 40px; /* Add some padding */
+    }
+
+    #result-screen h2 {
+        width: 100%; /* Make heading take full width */
+        margin-bottom: 20px;
+    }
+
+    #result-screen p {
+        width: 100%; /* Make paragraphs take full width */
+        text-align: center;
+    }
+
+    #result-map {
+        width: 50vw; /* Take up more width */
+        max-width: 1200px; /* Even larger max width for the map */
+        height: 70vh; /* Even larger height */
+        margin-right: 30px; /* Space between map and info */
+    }
+
+    #location-info {
+        width: 30vw; /* Take up more width */
+        max-width: 500px; /* Larger max width for location info */
+        margin-left: 0; /* Reset margin */
+        margin-right: 0; /* Reset margin */
+    }
+
+    .session-summary-container {
+        width: 30vw; /* Take up more width */
+        max-width: 500px; /* Larger max width for summary */
+        margin-top: 0; /* Reset margin */
+        margin-left: 30px; /* Space between info and summary */
+    }
+
+    #result-screen .action-button,
+    #result-screen .secondary-button {
+        width: auto; /* Allow buttons to size naturally */
+        margin-top: 30px; /* More space below content */
+        margin-left: 15px; /* Space between buttons */
+        margin-right: 15px; /* Space between buttons */
+    }
+
+    .result-content-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 2000px; /* Limit overall width */
+        margin-top: 20px;
+    }
+
+    .result-content-wrapper > div {
+        margin: 0 15px; /* Space between map, info, and summary */
+    }
 /* --- Result Screen and Leaderboard Enhancements --- */
 
 /* Style the new container for the session summary and leaderboard */

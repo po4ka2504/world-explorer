@@ -21,8 +21,8 @@
         <div class="language-switcher-container">
             <select id="language-switcher">
               <option value="uk">Українська</option>
-                  <option value="nl">Nederlands</option>
-                <option value="en">English</option>
+                 <option value="en">English</option>
+                <option value="nl">Nederlands</option>
                 <option value="fr">Français</option>
                 <option value="de">Deutsch</option>
                 <option value="pl">Polski</option>
@@ -81,7 +81,9 @@
     <!-- Screen 4: Guessing Map -->
     <div id="guess-screen" class="screen">
         <h2 data-translate-key="whereAreYou">Where do you think you are?</h2>
-        <div id="guess-map"></div>
+        <div class="map-container">
+            <div id="guess-map"></div>
+        </div>
         <button id="submit-guess-btn" class="action-button" style="margin-top: 20px;" data-translate-key="confirmGuess">Confirm Guess</button>
     </div>
 
@@ -91,20 +93,21 @@
         <p><span data-translate-key="distance">Distance</span>: <span id="distance-result"></span> km</p>
         <p><span data-translate-key="roundScore">Round Score</span>: <span id="score-result"></span></p>
 
-        <div id="location-info">
-            <div>
-                <strong data-translate-key="targetLocation">Target Location:</strong>
-                <span id="actual-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
+        <div class="result-content-wrapper">
+            <div id="location-info">
+                <div>
+                    <strong data-translate-key="targetLocation">Target Location:</strong>
+                    <span id="actual-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
+                </div>
+                <div>
+                    <strong data-translate-key="yourGuess">Your Guess:</strong>
+                    <span id="guess-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
+                </div>
             </div>
-            <div>
-                <strong data-translate-key="yourGuess">Your Guess:</strong>
-                <span id="guess-coords" data-translate-key-placeholder="loadingLocation">Loading...</span>
-            </div>
-        </div>
-      
-        <div id="result-map"></div>
+          
+            <div id="result-map"></div>
 
-        <div class="session-summary-container">
+            <div class="session-summary-container">
             <h3><span data-translate-key="sessionFor">Session for</span> <span id="player-name-display"></span></h3>
             <p style="font-size: 1.6em; font-weight: bold; color: #1DB954; margin: 10px 0;">
                 <span data-translate-key="totalScore">Total Score:</span> <span id="total-score-value">0</span>
@@ -114,6 +117,7 @@
             <ul id="leaderboard-list">
                 <!-- Leaderboard items will be added here by JavaScript -->
             </ul>
+        </div>
         </div>
     
         <button id="play-again-btn" class="action-button" data-translate-key="playAnotherRound">Play Another Round</button>
