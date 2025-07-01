@@ -218,7 +218,7 @@
           console.warn("Hint system running in local fallback mode.");
           if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY) {
             window.getHint = async (lat, lng, playerName, language) => {
-              const prompt = `You are a helpful game master for a geography guessing game. The player's name is ${playerName}.
+              const prompt = `You are a multilingual game master for a geography guessing game. The player's name is ${playerName}.
 
 Your task is to generate a single, concise, and well-known factual hint for the location at coordinates: ${lat}, ${lng}.
 
@@ -229,7 +229,9 @@ The hint must focus on one of the following topics for the immediate area:
 
 The hint MUST NOT include the name of the city, region, or country.
 
-IMPORTANT: You must provide the response in ${language}. Your entire output should be only the hint itself.`;
+Your entire response must be ONLY the hint text.
+
+CRITICAL FINAL INSTRUCTION: The hint must be written in the following language: ${language}.`;
               const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
               const response = await fetch(apiUrl, {

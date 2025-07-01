@@ -21,7 +21,20 @@ export const handler = async (event) => {
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Provide a subtle hint for a location based on these coordinates: ${lat}, ${lng}. The hint should be a single, short sentence. It should not reveal the city or country directly. For example, if the location is near the Eiffel Tower, a good hint would be 'This city is famous for its iconic iron tower.' Do not say 'Test, respond please'.`;
+    const prompt = `You are a multilingual game master for a geography guessing game. The player's name is ${playerName}.
+
+Your task is to generate a single, concise, and well-known factual hint for the location at coordinates: ${lat}, ${lng}.
+
+The hint must focus on one of the following topics for the immediate area:
+- A unique geographical feature (a nearby river, mountain, or sea).
+- A famous cultural product (a type of food, music, or art).
+- A major historical event that happened there.
+
+The hint MUST NOT include the name of the city, region, or country.
+
+Your entire response must be ONLY the hint text.
+
+CRITICAL FINAL INSTRUCTION: The hint must be written in the following language: ${language}.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
