@@ -1,0 +1,14 @@
+{
+  "name": "world-explorer",
+  "version": "1.0.0",
+  "description": "A geo explorer game",
+  "main": "game-test.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

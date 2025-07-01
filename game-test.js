@@ -12,7 +12,7 @@ let gameSettings = {
 // --- Game State (reset every new session) ---
 let sessionScores = [];
 let totalSessionScore = 0;
-const playerName = "@placeholdername@";
+let playerName = ""; // Changed from const to let, initialized as empty
 
 // --- Google Maps Objects (reset every round) ---
 let panorama;
@@ -35,14 +35,26 @@ window.initGame = function() {
     console.log("Google Maps API loaded. Game is ready.");
 
     // --- Language Initialization ---
-    // 1. Load the saved language from localStorage, or default to 'en'.
-    const savedLang = localStorage.getItem('geoGameLanguage') || 'en';
-    
-    // 2. Set the language and update the dropdown to show the current selection.
-    setLanguage(savedLang); 
+    // 1. Check for a language saved in localStorage.
+    let savedLang = localStorage.getItem('geoGameLanguage');
+
+    // 2. If no saved language, detect from browser settings.
+    if (!savedLang) {
+        const browserLang = navigator.language.split('-')[0]; // 'en-US' -> 'en'
+        if (translations[browserLang]) {
+            console.log(`No saved language. Detected browser language: ${browserLang}`);
+            savedLang = browserLang;
+        } else {
+            console.log(`No saved language. Browser language '${browserLang}' not supported. Defaulting to English.`);
+            savedLang = 'en'; // Default to English if browser language is not supported
+        }
+    }
+
+    // 3. Set the determined language and update the dropdown to match.
+    setLanguage(savedLang);
     document.getElementById('language-switcher').value = savedLang;
 
-    // 3. Add an event listener to the switcher to update the language on change.
+    // 4. Add an event listener to the switcher to update the language on change.
     document.getElementById('language-switcher').addEventListener('change', (e) => {
         setLanguage(e.target.value);
     });
@@ -54,15 +66,28 @@ window.initGame = function() {
 
     // --- Main Menu & Session Control Button Handlers ---
     document.getElementById('start-btn').addEventListener('click', () => {
-        // A new game from the main menu always starts a new session.
-        console.log("Starting a new session. Resetting scores.");
-        sessionScores = [];
-        totalSessionScore = 0;
-
         if (gameSettings.zones.length === 0) {
             showTranslatedAlert("selectZonePrompt");
             return;
         }
+        // Show the name input screen instead of starting directly
+        switchScreen('name-input-screen');
+        document.getElementById('player-name-input').focus();
+    });
+
+    document.getElementById('confirm-name-btn').addEventListener('click', () => {
+        const nameInput = document.getElementById('player-name-input');
+        if (nameInput.value.trim() === "") {
+            showTranslatedAlert("nameRequired"); // You'll need to add this key to translations.js
+            return;
+        }
+        playerName = nameInput.value.trim();
+        
+        // A new game from the main menu always starts a new session.
+        console.log(`Starting a new session for player: ${playerName}. Resetting scores.`);
+        sessionScores = [];
+        totalSessionScore = 0;
+
         switchScreen('loading-screen');
         findRandomStreetViewLocation(startGame);
     });
@@ -256,6 +281,9 @@ function endRound() {
 // Cleanly returns to the main menu, stopping any active timers
 function returnToMainMenu() {
     console.log("Returning to main menu...");
+    // Reset player name for the next session
+    playerName = "";
+    document.getElementById('player-name-input').value = ""; // Clear the input field
     clearInterval(timerInterval);
     switchScreen('start-screen');
 }
@@ -350,7 +378,7 @@ function findRandomStreetViewLocation(callback, attempt = 1) {
 }
 
 // --- Hint Functionality ---
-function showCountryHint() {
+async function showCountryHint() {
     if (!actualLocation) return;
 
     const hintButton = document.getElementById('hint-btn');
@@ -360,28 +388,19 @@ function showCountryHint() {
     timeLeft = Math.floor(timeLeft * 0.7);
     updateUI();
 
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ location: actualLocation }, (results, status) => {
-        if (status === "OK" && results[0]) {
-            let country = null;
-            for (const component of results[0].address_components) {
-                if (component.types.includes("country")) {
-                    country = component.long_name;
-                    break;
-                }
-            }
-            
-            if (country) {
-                const hintPrefix = translations[currentLanguage]?.countryHint || "The country is: ";
-                alert(hintPrefix + country);
-            } else {
-                showTranslatedAlert("countryNotFound");
-            }
+    try {
+        const languageName = languageMap[currentLanguage] || 'English'; // Convert code to full name
+        const hint = await window.getHint(actualLocation.lat(), actualLocation.lng(), playerName, languageName);
+        if (hint) {
+            alert(hint);
         } else {
-            console.error("Geocoder failed for hint due to: " + status);
-            showTranslatedAlert("geocodeError");
+            showTranslatedAlert("countryNotFound");
         }
-    });
+    } catch (error) {
+        console.error("Failed to get hint:", error);
+        // Display the actual error message from the API to the user for better debugging
+        alert(`Error fetching hint: ${error.message}`);
+    }
 }
 
 

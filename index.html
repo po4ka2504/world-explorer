@@ -44,6 +44,17 @@
         <button id="settings-btn" class="secondary-button" data-translate-key="settings">Settings</button>
     </div>
 
+    <!-- Screen 1.5: Name Input Modal -->
+    <div id="name-input-screen" class="screen">
+        <div class="settings-container">
+            <h2 data-translate-key="enterYourName">Enter Your Name</h2>
+            <input type="text" id="player-name-input" maxlength="30" placeholder="Max 30 characters">
+            <div class="settings-buttons">
+                <button id="confirm-name-btn" class="action-button" data-translate-key="continue">Continue</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Screen 2: Settings -->
     <div id="settings-screen" class="screen">
         <div class="settings-container">
@@ -178,6 +189,72 @@
         }
       }
       loadApiAndInitialize();
+
+      // This function now defines a global getHint function based on the environment.
+      async function loadGeminiApi() {
+        try {
+          // First, try to fetch the key from Netlify. This tells us the environment.
+          const keyResponse = await fetch('/.netlify/functions/get-gemini-key');
+          if (!keyResponse.ok) throw new Error('Not on Netlify');
+          
+          // --- NETLIFY ENVIRONMENT ---
+          console.log("Hint system running in Netlify mode.");
+          window.getHint = async (lat, lng, playerName, language) => {
+            const response = await fetch('/.netlify/functions/get-gemini-hint', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ lat, lng, playerName, language }),
+            });
+            if (!response.ok) {
+               const err = await response.json();
+               throw new Error(err.error || "Hint function failed");
+            }
+            const data = await response.json();
+            return data.hint;
+          };
+
+        } catch (error) {
+          // --- LOCAL ENVIRONMENT ---
+          console.warn("Hint system running in local fallback mode.");
+          if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY) {
+            window.getHint = async (lat, lng, playerName, language) => {
+              const prompt = `You are a helpful game master for a geography guessing game. The player's name is ${playerName}.
+
+Your task is to generate a single, concise, and well-known factual hint for the location at coordinates: ${lat}, ${lng}.
+
+The hint must focus on one of the following topics for the immediate area:
+- A unique geographical feature (a nearby river, mountain, or sea).
+- A famous cultural product (a type of food, music, or art).
+- A major historical event that happened there.
+
+The hint MUST NOT include the name of the city, region, or country.
+
+IMPORTANT: You must provide the response in ${language}. Your entire output should be only the hint itself.`;
+              const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+              const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+              });
+
+              if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error.message || "Direct Gemini API call failed");
+              }
+              const data = await response.json();
+              return data.candidates[0]?.content?.parts[0]?.text;
+            };
+          } else {
+            // No key available at all
+            console.error("Local GEMINI_API_KEY not found in apiKey.js.");
+            window.getHint = () => {
+              throw new Error("Gemini API Key is not configured for local development.");
+            }
+          }
+        }
+      }
+      loadGeminiApi();
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
