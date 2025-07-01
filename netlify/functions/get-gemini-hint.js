@@ -1,20 +1,20 @@
 // netlify/functions/get-gemini-hint.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const { lat, lng } = JSON.parse(event.body);
+  const { lat, lng, playerName, language } = JSON.parse(event.body);
   const geminiApiKey = process.env.GEMINI_API_KEY;
 
   if (!geminiApiKey) {
     return { statusCode: 500, body: JSON.stringify({ error: "Gemini API key not configured." }) };
   }
 
-  if (!lat || !lng) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Latitude and longitude are required." }) };
+  if (!lat || !lng || !playerName || !language) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Latitude, longitude, player name, and language are required." }) };
   }
 
   try {

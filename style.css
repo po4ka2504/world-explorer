@@ -255,20 +255,71 @@ h2 {
 }
 .quit-button:hover { background-color: rgba(220, 53, 69, 1); }
 
-/* --- Settings Screen --- */
-#settings-screen {
-    justify-content: center; /* Center content vertically */
-    padding: 40px 20px; /* Add more vertical padding */
-    overflow-y: auto; /* Allow scrolling if content overflows */
+/* --- Settings & Name Input Screens --- */
+#settings-screen, #name-input-screen {
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 50; /* Ensure it's above other content */
 }
 
 .settings-container {
+    background-color: rgba(30, 30, 30, 0.95); /* Dark, slightly transparent background */
+    padding: clamp(20px, 5vw, 40px); /* Responsive padding */
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px; /* Limits width on very large screens */
+    text-align: center;
+    border: 1px solid #444;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 600px; /* Limit the overall width of the settings content */
+    gap: 20px;
 }
+
+#player-name-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #555;
+    background-color: #2a2a2a;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2em;
+    text-align: center;
+    box-sizing: border-box; /* Ensures padding doesn't add to width */
+}
+
+#player-name-input:focus {
+    outline: none;
+    border-color: #1DB954;
+}
+
+.settings-section {
+    width: 100%;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+    gap: 10px;
+    text-align: left;
+    margin-top: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
 
 .settings-buttons {
     display: flex;

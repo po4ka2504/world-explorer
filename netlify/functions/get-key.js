@@ -1,7 +1,5 @@
-// This is the SAME function, but written using ES Module syntax.
-// Note the `export const handler` at the beginning.
-
-export const handler = async (event, context) => {
+// This is the SAME function, but written using CommonJS syntax.
+exports.handler = async (event, context) => {
   // Access the environment variable set in the Netlify UI
   const apiKey = process.env.GOOGLE_API_KEY;
 

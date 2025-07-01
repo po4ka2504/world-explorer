@@ -1,5 +1,5 @@
 // netlify/functions/get-gemini-key.js
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   const geminiApiKey = process.env.GEMINI_API_KEY;
 
   if (!geminiApiKey) {
